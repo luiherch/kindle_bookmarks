@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>kindle_wails</title>
+    <script src="src/fun.js" type="module"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+<div id="app">
+    <div class="container">
+        <div>
+            <h2>Kindle Bookmarks</h2>
+        </div>
+        <div class="grid">
+            <div>
+                <input type="button" value="Sync with notion" id="sync" onclick="sync()">
+                <progress value="25" max="100"></progress>
+            </div>
+            <input type="button" value="View Highlights" id="view_highlights" onclick="window.location='highlights.html'">
+        </div>
+        <label for="">Database ID
+            <input type="text" id="dbid" placeholder="Database ID">
+        </label>
+        <input type="button" value="Set Database ID" onclick="update_db()">
+        
+        <details>
+            <summary role="button" class="secondary">Configuration</summary>
+            <label for="Api secret">Api Secret
+                <input type="text" id="apisecret" placeholder="Api secret">
+            </label>
+            <input type="button" value="Set API Secret" onclick="update_secret()">
+          </details>
+    </div>
+</div>
+<!-- <script src="./src/main.js" type="module"></script> -->
+</body>
+</html>

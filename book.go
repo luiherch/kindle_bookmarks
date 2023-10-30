@@ -29,6 +29,11 @@ type CompositeKey struct {
 	Author string
 }
 
+type Article struct {
+	Cite   string
+	Footer string
+}
+
 func parseMeta(meta string, h Highlight) Highlight {
 	meta_parts := strings.Split(meta, "|")
 	length := len(meta_parts)
@@ -133,3 +138,8 @@ func readHighlights() []Highlight {
 
 	return highlights
 }
+
+// func searchKindle() {
+// 	ctx := gousb.NewContext()
+// 	defer ctx.Close()
+// }

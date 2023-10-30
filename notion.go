@@ -1,20 +1,23 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strings"
 	"text/template"
 )
 
 type DataComb struct {
 	Highlight
-	Db
+	DbConfig
 }
-type Db struct {
-	DatabaseId string
-	ApiSecret  string
+
+type DbConfig struct {
+	DatabaseId string `json:"db_id"`
+	ApiSecret  string `json:"notion_api_secret"`
 }
 
 func insertItem(data DataComb) {
@@ -60,4 +63,14 @@ func insertItem(data DataComb) {
 		fmt.Println(err)
 		return
 	}
+}
+
+func toJson(file_path string, obj interface{}) error {
+	b, err := json.MarshalIndent(obj, "", "    ")
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	err = os.WriteFile(file_path, b, os.ModePerm)
+	return err
 }
