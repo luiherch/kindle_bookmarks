@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 )
@@ -92,9 +94,7 @@ func wrapHighlights(highlights []Highlight) []Book {
 	return books
 }
 
-func readHighlights() []Highlight {
-	//clippings_path := "E:\\documents"
-	clippings_path := "C:\\Users\\luish\\Documents\\Projects\\kindle_bookmarks"
+func readHighlights(clippings_path string) []Highlight {
 	files, err := os.ReadDir(clippings_path)
 	if err != nil {
 		log.Fatal(err)
@@ -139,7 +139,37 @@ func readHighlights() []Highlight {
 	return highlights
 }
 
-// func searchKindle() {
-// 	ctx := gousb.NewContext()
-// 	defer ctx.Close()
-// }
+func getKindlePath() (string, error) {
+	var kindlePath string
+
+	if runtime.GOOS == "windows" {
+		// On Windows, you can look for drives in the format "D:\" or "E:\"
+		for drive := 'D'; drive <= 'Z'; drive++ {
+			driveLetter := string(drive) + ":\\" + "documents"
+			fileInfo, err := os.Stat(driveLetter)
+			if err == nil && fileInfo.IsDir() {
+				kindlePath = driveLetter
+				return kindlePath, nil
+			}
+		}
+	} else if runtime.GOOS == "darwin" {
+		// On macOS, you can look for mounted volumes in "/Volumes"
+		volumes, err := filepath.Glob("/Volumes/*")
+		if err != nil {
+			return "", err
+		}
+
+		for _, volume := range volumes {
+			if _, err := os.Stat(filepath.Join(volume, "documents/")); err == nil {
+				kindlePath = volume
+				return kindlePath, nil
+			}
+		}
+	}
+
+	if kindlePath == "" {
+		return "", fmt.Errorf("kindle not found")
+	}
+
+	return kindlePath, nil
+}

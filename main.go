@@ -20,12 +20,15 @@ var CONFIG_PATH = "configs/data.json"
 
 func main() {
 
-	highlights := readHighlights()
+	kindle_path, err := getKindlePath()
+	if err != nil {
+		fmt.Println("No Kindle detected")
+	}
+	highlights := readHighlights(kindle_path)
 	books := wrapHighlights(highlights)
 	library := Library{Books: books, Highlights: highlights}
 	var dbconfig DbConfig
 	dbconfig.ReadConfig()
-	fmt.Println("Hola Luis")
 	fmt.Println(dbconfig)
 
 	templateStr := `<details>
@@ -51,15 +54,11 @@ func main() {
 	parent_html, _ := os.ReadFile("templates/highlights_template.html")
 	largerTemplateStr := strings.Replace(string(parent_html), "<!-- Insert html here -->", generatedHTML.String(), 1)
 
-	fmt.Println(largerTemplateStr)
-
 	os.WriteFile("frontend/highlights.html", []byte(largerTemplateStr), os.ModePerm)
 
-	// Create an instance of the app structure
 	app := NewApp()
 
-	// Create application with options
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:  "Kindle Bookmarks",
 		Width:  1024,
 		Height: 768,

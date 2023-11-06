@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>kindle_wails</title>
     <script src="src/fun.js" type="module"></script>
+    <script src="src/modal.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
 </head>
 <body>
@@ -15,8 +16,8 @@
         </div>
         <div class="grid">
             <div>
-                <input type="button" value="Sync with notion" id="sync" onclick="sync()">
-                <progress value="25" max="100"></progress>
+                <!-- <input type="button" value="Sync with notion" id="sync" onclick="sync()"> -->
+                <button id="sync" onclick="sync()">Sync with notion</button>
             </div>
             <input type="button" value="View Highlights" id="view_highlights" onclick="window.location='highlights.html'">
         </div>
@@ -33,7 +34,29 @@
             <input type="button" value="Set API Secret" onclick="update_secret()">
           </details>
     </div>
+
+    <dialog id="confirmation-modal">
+        <article>
+          <a href="#close"
+            aria-label="Close"
+            class="close"
+            data-target="confirmation-modal"
+            onClick="toggleModal(event)">
+          </a>
+          <h3>Sync successful!</h3>
+          <p>
+            Your highlights have been synced with Notion successfully!
+          </p>
+          <footer>
+            <a href="#accept"
+              role="button"
+              data-target="confirmation-modal"
+              onClick="toggleModal(event)">
+              Accept
+            </a>
+          </footer>
+        </article>
+    </dialog>
 </div>
-<!-- <script src="./src/main.js" type="module"></script> -->
 </body>
 </html>
