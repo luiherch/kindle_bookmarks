@@ -17,19 +17,24 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 var CONFIG_PATH = "configs/data.json"
+var XOR_KEY = "ShDRq+Xd1qZrUElVi6T36zpw/PXMHfdO"
 
 func main() {
+
+	var highlights []Highlight
+	var books []Book
+	var dbconfig DbConfig
 
 	kindle_path, err := getKindlePath()
 	if err != nil {
 		fmt.Println("No Kindle detected")
+	} else {
+		highlights = readHighlights(kindle_path)
+		books = wrapHighlights(highlights)
 	}
-	highlights := readHighlights(kindle_path)
-	books := wrapHighlights(highlights)
 	library := Library{Books: books, Highlights: highlights}
-	var dbconfig DbConfig
+
 	dbconfig.ReadConfig()
-	fmt.Println(dbconfig)
 
 	templateStr := `<details>
 		<summary>{{.BookTitle}}</summary>
@@ -75,6 +80,6 @@ func main() {
 	})
 
 	if err != nil {
-		println("Error:", err.Error())
+		fmt.Println("Error:", err.Error())
 	}
 }

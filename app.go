@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"time"
 )
 
@@ -35,8 +36,6 @@ type Library struct {
 }
 
 func (l *Library) Sync() {
-	// env := LoadEnv()
-	// db := DbConfig{DatabaseId: env["db_id"], ApiSecret: env["notion_api_secret"]}
 	var cfg DbConfig
 	cfg.ReadConfig()
 	var data DataComb
@@ -54,9 +53,9 @@ func (cfg *DbConfig) UpdateConfig(field, value string) error {
 
 	switch field {
 	case "databaseId":
-		cfg.DatabaseId = value
+		cfg.DatabaseId = EncryptDecrypt(XOR_KEY, value)
 	case "apiSecret":
-		cfg.ApiSecret = value
+		cfg.ApiSecret = EncryptDecrypt(XOR_KEY, value)
 	}
 
 	err := toJson(CONFIG_PATH, cfg)
@@ -64,6 +63,7 @@ func (cfg *DbConfig) UpdateConfig(field, value string) error {
 }
 
 func (cfg *DbConfig) ReadConfig() error {
+	err := CheckFilePath(CONFIG_PATH)
 	data, err := os.ReadFile(CONFIG_PATH)
 	if err != nil {
 		fmt.Println(err)
@@ -73,7 +73,32 @@ func (cfg *DbConfig) ReadConfig() error {
 	if err := json.Unmarshal(data, &db); err != nil {
 		fmt.Println(err)
 	}
-	cfg.DatabaseId = db.DatabaseId
-	cfg.ApiSecret = db.ApiSecret
+	cfg.DatabaseId = EncryptDecrypt(XOR_KEY, db.DatabaseId)
+	cfg.ApiSecret = EncryptDecrypt(XOR_KEY, db.ApiSecret)
 	return err
+}
+
+func CheckFilePath(filePath string) error {
+	dir := filepath.Dir(filePath)
+
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		err := os.MkdirAll(dir, os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("error creating directory: %v", err)
+		}
+		fmt.Println("Directory created successfully:", dir)
+	}
+
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		file, err := os.Create(filePath)
+		if err != nil {
+			return fmt.Errorf("error creating file: %v", err)
+		}
+		defer file.Close()
+		fmt.Println("File created successfully:", filePath)
+		var cfg DbConfig
+		cfg.UpdateConfig("", "")
+	}
+
+	return nil
 }

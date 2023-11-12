@@ -1,17 +1,3 @@
-// document.addEventListener('DOMContentLoaded', function() {
-//     const themeButton = document.getElementById('themeButton');
-//     const htmlTag = document.querySelector('html');
-
-//     themeButton.addEventListener('click', function() {
-//         const currentTheme = htmlTag.getAttribute('data-theme');
-
-//         if (currentTheme === 'light') {
-//             htmlTag.setAttribute('data-theme', 'dark');
-//         } else {
-//             htmlTag.setAttribute('data-theme', 'light');
-//         }
-//     });
-// });
 
 import { Sync } from "../wailsjs/go/main/Library";
 
@@ -24,7 +10,7 @@ window.sync = function () {
     console.log("Synced!")
     const modal = document.getElementById("confirmation-modal");
     document.getElementById('sync').disabled = false;
-  document.getElementById('sync').setAttribute("aria-busy", "false")
+    document.getElementById('sync').setAttribute("aria-busy", "false")
     openModal(modal)
   });
 }

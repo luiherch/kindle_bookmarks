@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -100,14 +102,16 @@ func readHighlights(clippings_path string) []Highlight {
 		log.Fatal(err)
 	}
 
-	var line_delim string = "\r\n"
 	var text string
+	var line_ending string
 
 	for _, file := range files {
 		if file.Name() == "My Clippings.txt" {
 			fmt.Println("Clippings found!")
-			dat, _ := os.ReadFile(clippings_path + "\\My Clippings.txt")
+			joined_path := path.Join(clippings_path, "My Clippings.txt")
+			dat, _ := os.ReadFile(joined_path)
 			text = string(dat)
+			line_ending, _ = detectLineEnding(joined_path)
 		}
 	}
 
@@ -118,11 +122,11 @@ func readHighlights(clippings_path string) []Highlight {
 		text = strings.TrimPrefix(text, BOM)
 	}
 
-	clips := strings.Split(text, "==========\r\n")
+	clips := strings.Split(text, "=========="+line_ending)
 
 	highlights := make([]Highlight, 0)
 	for _, clip := range clips {
-		lines := strings.Split(clip, line_delim)
+		lines := strings.Split(clip, line_ending)
 		if len(lines) < 5 {
 			continue
 		}
@@ -143,7 +147,6 @@ func getKindlePath() (string, error) {
 	var kindlePath string
 
 	if runtime.GOOS == "windows" {
-		// On Windows, you can look for drives in the format "D:\" or "E:\"
 		for drive := 'D'; drive <= 'Z'; drive++ {
 			driveLetter := string(drive) + ":\\" + "documents"
 			fileInfo, err := os.Stat(driveLetter)
@@ -153,7 +156,6 @@ func getKindlePath() (string, error) {
 			}
 		}
 	} else if runtime.GOOS == "darwin" {
-		// On macOS, you can look for mounted volumes in "/Volumes"
 		volumes, err := filepath.Glob("/Volumes/*")
 		if err != nil {
 			return "", err
@@ -172,4 +174,29 @@ func getKindlePath() (string, error) {
 	}
 
 	return kindlePath, nil
+}
+
+func detectLineEnding(filePath string) (string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+	defer file.Close()
+
+	reader := bufio.NewReader(file)
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		return "", err
+	}
+
+	switch {
+	case strings.HasSuffix(line, "\r\n"):
+		return "\r\n", nil
+	case strings.HasSuffix(line, "\n"):
+		return "\n", nil
+	case strings.HasSuffix(line, "\r"):
+		return "\r", nil
+	default:
+		return "Unknown", nil
+	}
 }

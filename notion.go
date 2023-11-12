@@ -27,8 +27,6 @@ func insertItem(data DataComb) {
 
 	t, err := template.ParseFiles(template_path)
 
-	fmt.Println(err)
-	fmt.Println(t)
 	var s strings.Builder
 	err = t.Execute(&s, data)
 	if err != nil {
@@ -73,4 +71,11 @@ func toJson(file_path string, obj interface{}) error {
 	}
 	err = os.WriteFile(file_path, b, os.ModePerm)
 	return err
+}
+
+func EncryptDecrypt(key, input string) (output string) {
+	for i := 0; i < len(input); i++ {
+		output += string(input[i] ^ key[i%len(key)])
+	}
+	return output
 }
