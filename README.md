@@ -4,11 +4,17 @@
 
 The Kindle Bookmarks is an application built using Go and the Wails framework. This tool enables users to detect Kindle devices connected to their computer and scrape the highlights from their Kindle e-books. It also provides the functionality to visualize these highlights, as well as sync them with Notion by configuring your Notion database ID and API secret.
 
+### Main application
+![Main application](img/main.png)
+
+### Visualize Highlights
+![Highlights](img/highlights.png)
+
 ## Features
 
 - Detect connected Kindle devices.
-- Retrieve and display your highlights in a user-friendly interface.
 - Sync your highlights with Notion.
+- Retrieve and display your highlights in a user-friendly interface.
 - Cross-platform support (Windows, macOS, Linux).
 
 ## Installation
