@@ -28,21 +28,20 @@ The Kindle Bookmarks is an application built using Go and the Wails framework. T
 1. Clone this repository to your local machine:
 
    ```shell
-   git clone https://github.com/your-username/kindle-highlights-scraper.git
+   git clone https://github.com/luiherch/kindle_bookmarks.git
    cd kindle_bookmarks
    ```
 
 2. Install the Wails development environment:
 
    ```shell
-   go get github.com/wailsapp/wails/cmd/wails
+   go install github.com/wailsapp/wails/v2/cmd/wails@latest
    ```
 
 3. Build and run the application:
 
    ```shell
    wails build
-   ./cmd/kindle-highlights-scraper
    ```
 
 The application should now be up and running.
