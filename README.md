@@ -80,5 +80,6 @@ Contributions are welcome! If you'd like to contribute to this project, please f
 ## Acknowledgments
 
 - This project was inspired by HolyCristis and the love for reading that she spreads.
+- Special thanks to [Ivan](https://github.com/ivanrg99) for introducing me to Golang and for his continuous guidance.
 
 Thank you for using the Kindle Bookmarks program! Enjoy managing your Kindle highlights and syncing them with Notion.
